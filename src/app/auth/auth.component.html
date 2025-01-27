@@ -12,10 +12,11 @@
 
   <p>
     <button [disabled]="isLoading">
-      @if(!isLoading){ Login }
-      <ng-template [appLoader]="isLoading">
+      <span *appLoader="!isLoading">Login</span>
+      <app-loader *appLoader="isLoading" class="spinner" />
+      <!-- <ng-template [appLoader]="isLoading">
         <app-loader />
-      </ng-template>
+      </ng-template> -->
     </button>
   </p>
 </form>
