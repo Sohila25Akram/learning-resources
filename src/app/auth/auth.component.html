@@ -1,3 +1,4 @@
+@let btnText = "Login";
 <h2>Authenticate to access all resources</h2>
 <form (ngSubmit)="onSubmit()">
   <p>
@@ -11,12 +12,10 @@
   </p>
 
   <p>
-    <button [disabled]="isLoading">
-      <span *appLoader="!isLoading">Login</span>
-      <app-loader *appLoader="isLoading" class="spinner" />
-      <!-- <ng-template [appLoader]="isLoading">
-        <app-loader />
-      </ng-template> -->
+    <button>
+      <span [appLoader]="isLoading" text="btnText">
+        <span>{{ btnText }}</span>
+      </span>
     </button>
   </p>
 </form>

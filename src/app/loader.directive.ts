@@ -1,28 +1,51 @@
 import {
   Directive,
-  effect,
+  ElementRef,
   inject,
   input,
-  TemplateRef,
+  OnChanges,
+  Renderer2,
+  SimpleChanges,
   ViewContainerRef,
 } from '@angular/core';
+import { LoaderComponent } from './shared/loader/loader.component';
 
 @Directive({
   selector: '[appLoader]',
   standalone: true,
 })
-export class LoaderDirective {
+export class LoaderDirective implements OnChanges {
   isloading = input(false, { alias: 'appLoader' });
-  private templateRef = inject(TemplateRef);
+  text = input.required<string>();
+
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
   private templateContent = inject(ViewContainerRef);
 
-  constructor() {
-    effect(() => {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isloading']) {
       if (this.isloading()) {
-        this.templateContent.createEmbeddedView(this.templateRef);
+        this.addLoading();
       } else {
-        this.templateContent.clear();
+        this.removeLoading();
       }
-    });
+    }
+  }
+
+  addLoading() {
+    const originalSpan = this.el.nativeElement.querySelector('span');
+    if (originalSpan) {
+      this.renderer.setStyle(originalSpan, 'display', 'none');
+    }
+
+    this.templateContent.createComponent(LoaderComponent);
+  }
+  removeLoading() {
+    const originalSpan = this.el.nativeElement.querySelector('span');
+    if (originalSpan) {
+      this.renderer.removeStyle(originalSpan, 'display');
+    }
+
+    this.templateContent.clear();
   }
 }
